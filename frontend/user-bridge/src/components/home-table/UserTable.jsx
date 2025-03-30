@@ -111,7 +111,14 @@ const UserTable = () => {
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[5, 10]}
-        sx={{ border: 0 }}
+        sx={{
+          border: 0,
+          width: "100%",
+          overflowX: "auto", // Enables horizontal scrolling if needed
+          "& .MuiDataGrid-root": {
+            fontSize: "14px", // Adjust font size for better readability
+          },
+        }}
         getRowId={(row) => row._id}
       />
 
