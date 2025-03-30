@@ -1,0 +1,81 @@
+
+.cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 64px);
+  }
+  
+  .form {
+    max-width: 350px;
+    width: 500px;
+    background: gainsboro;
+    padding: 30px;
+    margin-top: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form div {
+    margin-bottom: 10px; /* Add space between fields */
+    
+  }
+  
+  .form .form__custom-button {
+    margin-top: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    font-size: 16px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    
+  
+  }
+  
+  .add_user_form {
+    margin-top: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    font-size: 16px;
+    background-color: black !important;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    
+  
+  }
+  
+  .form .form__custom-button:hover {
+    background-color:rgb(31, 29, 29);
+
+  }
+  
+  .add_user_form:hover {
+    background-color:rgb(31, 29, 29) !important;
+
+  }
+  
+  
+  .heading_text{
+      text-align: center;
+      letter-spacing: 1px;
+  }
+
+  .password_active:active{
+.password_show{
+  position: relative;
+  right: 30px;
+}
+  }
