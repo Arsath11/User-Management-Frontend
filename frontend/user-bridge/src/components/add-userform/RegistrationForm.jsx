@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 
@@ -31,6 +31,8 @@ const RegistrationForm = ({
   selectedLanguages,
 }) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const { id } = useParams();
 
   const getData = async () => {
@@ -83,12 +85,24 @@ const RegistrationForm = ({
     });
   };
 
+ 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(userData?.email)) {
-      return toast.error("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.");
+      setLoading(false); 
+      return;
     }
+
+    if (userData?.mobileNo.length !== 10) {
+      toast.error("Mobile number must be exactly 10 digits");
+      setLoading(false);
+      return;
+    }
+
     try {
       const addValues = {
         userName: userData?.userName,
@@ -103,46 +117,38 @@ const RegistrationForm = ({
       };
 
       if (id) {
-        await axios
-          .put(
-            `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/` + `${id}`,
-            addValues
-          )
-          .then(() => {
-            toast.success("Successfully updated!");
-          });
-
-        setTimeout(() => {
-          navigate("/home");
-        }, 2000);
+        await axios.put(
+          `${import.meta.env.VITE_USER_API_URI}/api/add-user/${id}`,
+          addValues
+        );
+        toast.success("Successfully updated!");
       } else {
-        await axios
-          .post(
-            `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/`,
-            addValues
-          )
-          .then(() => {
-            toast.success("Successfully added!");
-            setTimeout(() => {
-              navigate("/home");
-            }, 2000);
-            setUserData({
-              userName: "",
-              mobileNo: "",
-              age: "",
-              gender: "",
-              country: "",
-              address: "",
-              email: "",
-            });
-          })
+        await axios.post(
+          `${import.meta.env.VITE_USER_API_URI}/api/add-user/`,
+          addValues
+        );
+        toast.success("Successfully added!");
 
-          .catch((err) => {
-            console.log(err.message);
-          });
+        setUserData({
+          userName: "",
+          mobileNo: "",
+          age: "",
+          gender: "",
+          country: "",
+          address: "",
+          email: "",
+        });
       }
+
+      setLoading(false);
+
+      setTimeout(() => {
+        navigate("/home");
+      }, 2000);
     } catch (error) {
       console.log(error.message);
+      toast.error("Something went wrong. Please try again.");
+      setLoading(false);
     }
   };
 
@@ -188,6 +194,7 @@ const RegistrationForm = ({
                 type="number"
                 value={userData?.mobileNo}
                 onChange={handleChange}
+                onWheel={(e) => e.target.blur()}
                 name="mobileNo"
                 variant="outlined"
                 fullWidth
@@ -345,14 +352,27 @@ const RegistrationForm = ({
             </Grid>
           </Grid>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button
-              type="submit"
-              variant="contained"
-              className="add_user_form"
-              color="primary"
-            >
-              Submit
-            </Button>
+            {loading ? (
+              <Button
+                loading
+                style={{ color: "white" }}
+                loadingPosition="start"
+                color="primary"
+                className="add_user_form"
+                variant="contained"
+              >
+                Loading...
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                variant="contained"
+                className="add_user_form"
+                color="primary"
+              >
+                Submit
+              </Button>
+            )}
           </div>
         </form>
       </Box>

@@ -27,7 +27,6 @@ function App() {
 function AppLayout() {
   const location = useLocation();
 
-  // Hide sidebar on login and signup pages
   const hideSidebar =
     location.pathname === "/" || location.pathname === "/signup";
 

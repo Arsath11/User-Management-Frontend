@@ -16,9 +16,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import { FaUsers, FaUser } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import { FiUserPlus } from "react-icons/fi";
@@ -75,21 +73,21 @@ export default function PersistentDrawerLeft() {
     navigate("/");
   };
 
-    const menuItems = [
-      { text: "Users Details", icon: <FaUsers />, path: "/home" },
-      { text: "Add User", icon: <FiUserPlus />, path: "/add-user" },
-      { text: "Profile", icon: <FaUser />, path: "/profile" },
-      { text: "Logout", path: "#", icon: <IoIosLogOut />, action: handleLogout } 
-    ];
+  const menuItems = [
+    { text: "Users Details", icon: <FaUsers />, path: "/home" },
+    { text: "Add User", icon: <FiUserPlus />, path: "/add-user" },
+    { text: "Profile", icon: <FaUser />, path: "/profile" },
+    { text: "Logout", path: "#", icon: <IoIosLogOut />, action: handleLogout },
+  ];
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline /> 
+      <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
             color="inherit"
-            aria-label="open drawer"  
+            aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
             sx={{ mr: 2, ...(open && { display: "none" }) }}
@@ -125,70 +123,23 @@ export default function PersistentDrawerLeft() {
         </DrawerHeader>
         <Divider />
         <List>
-          {/* {[
-            { text: "Users Details", path: "/home" },
-            { text: "Add User", path: "/add-user" },
-            { text: "Profile", path: "/profile" },
-            { text: "Logout", path: "#" },
-          ].map((item, index) => (
-            <ListItem key={item.text} disablePadding>
+          {menuItems.map(({ text, path, icon, action }) => (
+            <ListItem key={text} disablePadding>
               <ListItemButton
                 onClick={() => {
-                  navigate(item.path);
-                  setOpen(false);
-                }}
-              >
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            </ListItem>
-          ))} */}
-
-          {/* {[
-            { text: "Users Details", path: "/home" },
-            { text: "Add User", path: "/add-user" },
-            { text: "Profile", path: "/profile" },
-            { text: "Logout", path: "#" }, // Path is irrelevant in this case
-          ].map((item, index) => (
-            <ListItem key={item.text} disablePadding>
-              <ListItemButton
-                onClick={() => {
-                  if (item.text === "Logout") {
-                    handleLogout();
+                  if (text === "Logout" && action) {
+                    action(); 
                   } else {
-                    navigate(item.path);
-                    setOpen(false); // Close the drawer
+                    navigate(path);
+                    setOpen(false); 
                   }
                 }}
               >
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={item.text} />
+                <ListItemIcon>{icon}</ListItemIcon>
+                <ListItemText primary={text} />
               </ListItemButton>
             </ListItem>
-          ))} */}
-
-
-{menuItems.map(({ text, path, icon, action }) => (
-        <ListItem key={text} disablePadding>
-          <ListItemButton
-            onClick={() => {
-              if (text === "Logout" && action) {
-                action(); // Call logout function
-              } else {
-                navigate(path);
-                setOpen(false); // Close the drawer
-              }
-            }}
-          >
-            <ListItemIcon>{icon}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItemButton>
-        </ListItem>
-      ))}
+          ))}
         </List>
       </Drawer>
       <Main open={open}>

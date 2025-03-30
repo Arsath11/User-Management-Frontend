@@ -96,15 +96,8 @@ const UserTable = () => {
   };
   return (
     <div>
+      
       <ToastContainer />
-      <Button
-        onClick={() => navigate("/add-user")}
-        variant="contained"
-        className="add_user_form"
-        color="primary"
-      >
-        Add User
-      </Button>
 
       <DataGrid
         rows={userList}
@@ -114,9 +107,9 @@ const UserTable = () => {
         sx={{
           border: 0,
           width: "100%",
-          overflowX: "auto", // Enables horizontal scrolling if needed
+          overflowX: "auto", 
           "& .MuiDataGrid-root": {
-            fontSize: "14px", // Adjust font size for better readability
+            fontSize: "14px", 
           },
         }}
         getRowId={(row) => row._id}

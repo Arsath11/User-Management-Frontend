@@ -7,7 +7,7 @@ import axios from "axios";
 import bcrypt from "bcryptjs";
 import { ToastContainer, toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-
+import SaveIcon from "@mui/icons-material/Save";
 const Login = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
@@ -16,6 +16,7 @@ const Login = () => {
   });
   const [active, setActive] = useState(false);
   const [passwordText, setPasswordText] = useState("password");
+  const [loading, setLoading] = useState(false);
 
   const [userList, setUserList] = useState([]);
   useEffect(() => {
@@ -39,17 +40,23 @@ const Login = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
+    try {
+      const user = userList.find((data) => data.email === userData?.email);
 
-    const user = userList.find((data) => data.email === userData?.email);
+      if (!user) {
+        toast.error("User not found. Sign up now.");
 
-    if (!user) {
-      return toast.error("User not found. Sign up now.");
-    }
+        return setLoading(false);
+      }
 
-    // Compare passwords
-    const isMatch = await bcrypt.compare(userData?.password, user.password);
+      const isMatch = await bcrypt.compare(userData?.password, user.password);
 
-    if (isMatch) {
+      if (!isMatch) {
+        toast.error("Authentication failed. Please check your login details");
+        return setLoading(false);
+      }
+
       toast.success(`Login successful, ${user?.userName}`);
       localStorage.setItem("loggedIn", true);
       localStorage.setItem("user", JSON.stringify(user));
@@ -59,9 +66,11 @@ const Login = () => {
       });
       setTimeout(() => {
         navigate("/home");
+        setLoading(false);
       }, 2000);
-    } else {
-      toast.error(`Authentication failed. Please check your login details`);
+    } catch (error) {
+      toast.error(`Error: ${error.message}`);
+      setLoading(false);
     }
   };
 
@@ -144,9 +153,26 @@ const Login = () => {
             </span>
           </div>
 
-          <Button type="submit" color="primary" className="form__custom-button">
-            Submit
-          </Button>
+          {loading ? (
+            <Button
+              fullWidth
+              loading
+              style={{ color: "white" }}
+              loadingPosition="start"
+              color="primary"
+              className="form__custom-button"
+            >
+              Loading...
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              color="primary"
+              className="form__custom-button"
+            >
+              Submit
+            </Button>
+          )}
         </form>
       </div>
     </div>

@@ -20,6 +20,7 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const [usersList, setUserList] = useState([]);
 
@@ -44,10 +45,29 @@ const Signup = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(userData?.email)) {
-      return toast.error("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.");
+      return setLoading(false);
+    }
+
+    if (userData?.password !== userData?.confirmPassword) {
+      toast.error("Confirm password and Password must be the same.");
+      return setLoading(false);
+    }
+    if (userData?.password.length < 6) {
+      toast.error("Password should be at least 6 characters");
+      return setLoading(false);
+    }
+
+    const duplicateEmail = usersList?.find(
+      (data) => data?.email === userData?.email
+    );
+    if (duplicateEmail) {
+      toast.error("Email already exists. Please use a different email.");
+      return setLoading(false);
     }
     try {
       const salt = await bcrypt.genSalt(10);
@@ -58,39 +78,22 @@ const Signup = () => {
         password: hashedPassword,
       };
 
-      if (userData?.password !== userData?.confirmPassword) {
-        return toast.error("Confirm password and Password must be the same.");
-      }
-
-      if (userData?.password.length < 6) {
-        return toast.error("Password should be at least 6 characters");
-      }
-
-      const duplicateEmail = usersList?.find(
-        (data) => data?.email === userData?.email
+      await axios.post(
+        `${import.meta.env.VITE_USER_API_URI}` + `/api/users/`,
+        addValues
       );
-      if (duplicateEmail) {
-        return toast.error(
-          "Email already exists. Please use a different email."
-        );
-      }
-      await axios
-        .post((`${import.meta.env.VITE_USER_API_URI}`+`/api/users/`), addValues)
-        .then(() => {
-          toast.success("Account created successfully!");
-          setUserData({
-            name: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-          });
-          setTimeout(() => {
-            navigate("/");
-          }, 2000);
-        })
-        .catch((err) => {
-          toast.error("Failed to create account. Please retry");
-        });
+
+      toast.success("Account created successfully!");
+      setUserData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+      setTimeout(() => {
+        navigate("/");
+        setLoading(false);
+      }, 2000);
     } catch (error) {
       toast.error(`Error ${error.message}`);
     }
@@ -232,9 +235,27 @@ const Signup = () => {
               </span>{" "}
             </p>
           </div>
-          <Button type="submit" color="primary" className="form__custom-button">
-            Submit
-          </Button>
+
+          {loading ? (
+            <Button
+              fullWidth
+              loading
+              style={{ color: "white" }}
+              loadingPosition="start"
+              color="primary"
+              className="form__custom-button"
+            >
+              Loading...
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              color="primary"
+              className="form__custom-button"
+            >
+              Submit
+            </Button>
+          )}
         </form>
       </div>
     </div>

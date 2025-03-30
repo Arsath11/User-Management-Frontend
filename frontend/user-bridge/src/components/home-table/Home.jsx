@@ -16,23 +16,17 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import { PiUserListDuotone } from "react-icons/pi";
 import { FaUsers, FaUser } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import { FiUserPlus } from "react-icons/fi";
-
-// Table
 
 import Paper from "@mui/material/Paper";
 
 import UserTable from "./UserTable";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 const Home = () => {
-  //   table
-
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -65,28 +59,20 @@ const Home = () => {
     setOpen(true);
   };
 
-  
-    const handleLogout = () => {
-      localStorage.removeItem("loggedIn");
-      localStorage.removeItem("user");
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
-    };
+  const handleLogout = () => {
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("user");
+    setTimeout(() => {
+      navigate("/");
+    }, 2000);
+  };
 
-  // const menuItems = [
-  //   { text: "Users Details", icon: <FaUsers />, path: "/home" },
-  //   { text: "Add User", icon: <FiUserPlus />, path: "/add-user" },
-  //   { text: "Profile", icon: <FaUser />, path: "/profile" },
-  //   { text: "Logout", icon: <IoIosLogOut /> },
-  // ];
-
-   const menuItems = [
-        { text: "Users Details", icon: <FaUsers />, path: "/home" },
-        { text: "Add User", icon: <FiUserPlus />, path: "/add-user" },
-        { text: "Profile", icon: <FaUser />, path: "/profile" },
-        { text: "Logout", path: "#", icon: <IoIosLogOut />, action: handleLogout } 
-      ];
+  const menuItems = [
+    { text: "Users Details", icon: <FaUsers />, path: "/home" },
+    { text: "Add User", icon: <FiUserPlus />, path: "/add-user" },
+    { text: "Profile", icon: <FaUser />, path: "/profile" },
+    { text: "Logout", path: "#", icon: <IoIosLogOut />, action: handleLogout },
+  ];
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -94,7 +80,6 @@ const Home = () => {
     display: "flex",
     alignItems: "center",
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   }));
@@ -122,7 +107,17 @@ const Home = () => {
 
   return (
     <div>
+        <Button
+            onClick={() => navigate("/add-user")}
+            variant="contained"
+            style={{ marginBottom: "20px",marginLeft:"20px" }}
+            className="add_user_form"
+            color="primary"
+          >
+            Add User
+          </Button>
       <Box sx={{ display: "flex" }}>
+        
         <CssBaseline />
         <AppBar position="fixed" open={open}>
           <Toolbar>
@@ -169,44 +164,29 @@ const Home = () => {
           </DrawerHeader>
           <Divider />
           <List>
-            {/* {["Users Details", "Add User", "Profile", "Logout"].map(
-              (text, index) => (
-                <ListItem key={text} disablePadding>
-                  <ListItemButton
-                    onClick={() =>
-                      (text === "Add User" && navigate("/add-user")) ||
-                      (text === "Profile" && navigate("/profile")) 
+            {menuItems.map(({ text, path, icon, action }) => (
+              <ListItem key={text} disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    if (text === "Logout" && action) {
+                      action();
+                    } else {
+                      navigate(path);
+                      setOpen(false);
                     }
-                  >
-                    <ListItemIcon>
-                      {index % 2 === 0 ? <PiUserListDuotone /> : <MailIcon />}
-                    </ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItemButton>
-                </ListItem>
-              )
-            )} */}
-{menuItems.map(({ text, path, icon, action }) => (
-        <ListItem key={text} disablePadding>
-          <ListItemButton
-            onClick={() => {
-              if (text === "Logout" && action) {
-                action(); // Call logout function
-              } else {
-                navigate(path);
-                setOpen(false); // Close the drawer
-              }
-            }}
-          >
-            <ListItemIcon>{icon}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItemButton>
-        </ListItem>
-      ))}
+                  }}
+                >
+                  <ListItemIcon>{icon}</ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
           </List>
           <Divider />
         </Drawer>
+
         <Main open={open}>
+        
           <Typography>
             <Paper sx={{ height: 300, width: "100%" }}>
               <UserTable />
