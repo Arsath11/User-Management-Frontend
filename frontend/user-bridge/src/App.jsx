@@ -30,8 +30,6 @@ function AppLayout() {
   const hideSidebar =
     location.pathname === "/" || location.pathname === "/signup";
 
-  const isLoggedIn = localStorage.getItem("loggedIn");
-  const user = JSON.parse(localStorage.getItem("user"));
 
   return (
     <div>
