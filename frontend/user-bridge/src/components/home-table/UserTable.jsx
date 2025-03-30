@@ -6,12 +6,27 @@ import { useNavigate } from "react-router-dom";
 import { CiEdit } from "react-icons/ci";
 import { AiOutlineDelete } from "react-icons/ai";
 import { toast, ToastContainer } from "react-toastify";
+import Slide from "@mui/material/Slide";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const UserTable = () => {
   const [userList, setUserList] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [rowId, setRowId] = useState("");
+
   useEffect(() => {
     const getDatas = async () => {
-      const response = await axios.get(import.meta.env.VITE_REGISTER_API_URI);
+      const response = await axios.get(
+        `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/`
+      );
       const user = response?.data;
       setUserList(user);
     };
@@ -62,15 +77,22 @@ const UserTable = () => {
     navigate(`/add-user/${row?._id}`);
   };
   const handleDelete = async (row) => {
+    setOpen(true);
+    setRowId(row?._id);
+  };
+
+  const deleteConfirmation = async () => {
     const deleteUser = await axios.delete(
-      import.meta.env.VITE_REGISTER_API_URI + `${row?._id}`
+      `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/` + `${rowId}`
     );
     if (deleteUser) {
       toast.success("Successfully deleted!");
     }
 
-    const deleteID = userList?.filter((data) => data?._id !== row?._id);
+    const deleteID = userList?.filter((data) => data?._id !== rowId);
     setUserList(deleteID);
+    setOpen(false);
+    setRowId(null);
   };
   return (
     <div>
@@ -92,6 +114,27 @@ const UserTable = () => {
         sx={{ border: 0 }}
         getRowId={(row) => row._id}
       />
+
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setOpen(false)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"Delete?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Are you sure you want to delete?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={deleteConfirmation} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

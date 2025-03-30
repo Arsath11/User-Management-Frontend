@@ -36,7 +36,9 @@ const RegistrationForm = ({
   const getData = async () => {
     if (id) {
       axios
-        .get(import.meta.env.VITE_REGISTER_API_URI + `${id}`)
+        .get(
+          `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/` + `${id}`
+        )
         .then((response) => {
           setUserData(response.data);
 
@@ -97,7 +99,10 @@ const RegistrationForm = ({
 
     if (id) {
       await axios
-        .put(import.meta.env.VITE_REGISTER_API_URI + `${id}`, addValues)
+        .put(
+          `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/` + `${id}`,
+          addValues
+        )
         .then(() => {
           toast.success("Successfully updated!");
         });
@@ -107,7 +112,10 @@ const RegistrationForm = ({
       }, 2000);
     } else {
       await axios
-        .post(import.meta.env.VITE_REGISTER_API_URI, addValues)
+        .post(
+          `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/`,
+          addValues
+        )
         .then(() => {
           toast.success("Successfully added!");
           setTimeout(() => {

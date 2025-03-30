@@ -18,6 +18,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
+import { PiUserListDuotone } from "react-icons/pi";
+import { FaUsers, FaUser } from "react-icons/fa";
+import { IoIosLogOut } from "react-icons/io";
+import { FiUserPlus } from "react-icons/fi";
 
 // Table
 
@@ -61,8 +65,28 @@ const Home = () => {
     setOpen(true);
   };
 
+  
+    const handleLogout = () => {
+      localStorage.removeItem("loggedIn");
+      localStorage.removeItem("user");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    };
 
+  // const menuItems = [
+  //   { text: "Users Details", icon: <FaUsers />, path: "/home" },
+  //   { text: "Add User", icon: <FiUserPlus />, path: "/add-user" },
+  //   { text: "Profile", icon: <FaUser />, path: "/profile" },
+  //   { text: "Logout", icon: <IoIosLogOut /> },
+  // ];
 
+   const menuItems = [
+        { text: "Users Details", icon: <FaUsers />, path: "/home" },
+        { text: "Add User", icon: <FiUserPlus />, path: "/add-user" },
+        { text: "Profile", icon: <FaUser />, path: "/profile" },
+        { text: "Logout", path: "#", icon: <IoIosLogOut />, action: handleLogout } 
+      ];
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -117,7 +141,7 @@ const Home = () => {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" noWrap component="div">
-            User Management 
+              User Management
             </Typography>
           </Toolbar>
         </AppBar>
@@ -145,7 +169,7 @@ const Home = () => {
           </DrawerHeader>
           <Divider />
           <List>
-            {["Users Details", "Add User", "Profile", "Logout"].map(
+            {/* {["Users Details", "Add User", "Profile", "Logout"].map(
               (text, index) => (
                 <ListItem key={text} disablePadding>
                   <ListItemButton
@@ -155,13 +179,30 @@ const Home = () => {
                     }
                   >
                     <ListItemIcon>
-                      {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                      {index % 2 === 0 ? <PiUserListDuotone /> : <MailIcon />}
                     </ListItemIcon>
                     <ListItemText primary={text} />
                   </ListItemButton>
                 </ListItem>
               )
-            )}
+            )} */}
+{menuItems.map(({ text, path, icon, action }) => (
+        <ListItem key={text} disablePadding>
+          <ListItemButton
+            onClick={() => {
+              if (text === "Logout" && action) {
+                action(); // Call logout function
+              } else {
+                navigate(path);
+                setOpen(false); // Close the drawer
+              }
+            }}
+          >
+            <ListItemIcon>{icon}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItemButton>
+        </ListItem>
+      ))}
           </List>
           <Divider />
         </Drawer>

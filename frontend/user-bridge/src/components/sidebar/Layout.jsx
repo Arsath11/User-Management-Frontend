@@ -19,7 +19,9 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
-
+import { FaUsers, FaUser } from "react-icons/fa";
+import { IoIosLogOut } from "react-icons/io";
+import { FiUserPlus } from "react-icons/fi";
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -72,6 +74,13 @@ export default function PersistentDrawerLeft() {
 
     navigate("/");
   };
+
+    const menuItems = [
+      { text: "Users Details", icon: <FaUsers />, path: "/home" },
+      { text: "Add User", icon: <FiUserPlus />, path: "/add-user" },
+      { text: "Profile", icon: <FaUser />, path: "/profile" },
+      { text: "Logout", path: "#", icon: <IoIosLogOut />, action: handleLogout } 
+    ];
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -137,7 +146,7 @@ export default function PersistentDrawerLeft() {
             </ListItem>
           ))} */}
 
-          {[
+          {/* {[
             { text: "Users Details", path: "/home" },
             { text: "Add User", path: "/add-user" },
             { text: "Profile", path: "/profile" },
@@ -160,7 +169,26 @@ export default function PersistentDrawerLeft() {
                 <ListItemText primary={item.text} />
               </ListItemButton>
             </ListItem>
-          ))}
+          ))} */}
+
+
+{menuItems.map(({ text, path, icon, action }) => (
+        <ListItem key={text} disablePadding>
+          <ListItemButton
+            onClick={() => {
+              if (text === "Logout" && action) {
+                action(); // Call logout function
+              } else {
+                navigate(path);
+                setOpen(false); // Close the drawer
+              }
+            }}
+          >
+            <ListItemIcon>{icon}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItemButton>
+        </ListItem>
+      ))}
         </List>
       </Drawer>
       <Main open={open}>

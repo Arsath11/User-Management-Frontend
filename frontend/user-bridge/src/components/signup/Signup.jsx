@@ -25,7 +25,9 @@ const Signup = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await axios.get(import.meta.env.VITE_USER_API_URI);
+      const response = await axios.get(
+        `${import.meta.env.VITE_USER_API_URI}` + `/api/users/`
+      );
       const user = response?.data;
       setUserList(user);
     };
@@ -68,7 +70,7 @@ const Signup = () => {
         );
       }
       await axios
-        .post(import.meta.env.VITE_USER_API_URI, addValues)
+        .post((`${import.meta.env.VITE_USER_API_URI}`+`/api/users/`), addValues)
         .then(() => {
           toast.success("Account created successfully!");
           setUserData({

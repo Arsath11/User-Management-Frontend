@@ -20,7 +20,9 @@ const Login = () => {
   const [userList, setUserList] = useState([]);
   useEffect(() => {
     const getDatas = async () => {
-      const response = await axios.get(import.meta.env.VITE_USER_API_URI);
+      const response = await axios.get(
+        `${import.meta.env.VITE_USER_API_URI}` + `/api/users/`
+      );
       const user = response?.data;
       setUserList(user);
     };
