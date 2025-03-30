@@ -44,6 +44,11 @@ const Signup = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userData?.email)) {
+      return toast.error("Please enter a valid email address.");
+    }
     try {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(userData?.password, salt);

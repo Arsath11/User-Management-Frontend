@@ -85,56 +85,64 @@ const RegistrationForm = ({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const addValues = {
-      userName: userData?.userName,
-      mobileNo: userData?.mobileNo,
-      age: userData?.age,
-      country: userData?.country,
-      gender: userData?.gender,
-      address: userData?.address,
-      email: userData?.email,
-      dateofBirth: selectedDate || "",
-      languages: selectedLanguages || [],
-    };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userData?.email)) {
+      return toast.error("Please enter a valid email address.");
+    }
+    try {
+      const addValues = {
+        userName: userData?.userName,
+        mobileNo: userData?.mobileNo,
+        age: userData?.age,
+        country: userData?.country,
+        gender: userData?.gender,
+        address: userData?.address,
+        email: userData?.email,
+        dateofBirth: selectedDate || "",
+        languages: selectedLanguages || [],
+      };
 
-    if (id) {
-      await axios
-        .put(
-          `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/` + `${id}`,
-          addValues
-        )
-        .then(() => {
-          toast.success("Successfully updated!");
-        });
-
-      setTimeout(() => {
-        navigate("/home");
-      }, 2000);
-    } else {
-      await axios
-        .post(
-          `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/`,
-          addValues
-        )
-        .then(() => {
-          toast.success("Successfully added!");
-          setTimeout(() => {
-            navigate("/home");
-          }, 2000);
-          setUserData({
-            userName: "",
-            mobileNo: "",
-            age: "",
-            gender: "",
-            country: "",
-            address: "",
-            email: "",
+      if (id) {
+        await axios
+          .put(
+            `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/` + `${id}`,
+            addValues
+          )
+          .then(() => {
+            toast.success("Successfully updated!");
           });
-        })
 
-        .catch((err) => {
-          console.log(err.message);
-        });
+        setTimeout(() => {
+          navigate("/home");
+        }, 2000);
+      } else {
+        await axios
+          .post(
+            `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/`,
+            addValues
+          )
+          .then(() => {
+            toast.success("Successfully added!");
+            setTimeout(() => {
+              navigate("/home");
+            }, 2000);
+            setUserData({
+              userName: "",
+              mobileNo: "",
+              age: "",
+              gender: "",
+              country: "",
+              address: "",
+              email: "",
+            });
+          })
+
+          .catch((err) => {
+            console.log(err.message);
+          });
+      }
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
