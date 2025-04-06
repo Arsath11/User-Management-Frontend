@@ -17,22 +17,29 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const UserTable = () => {
-  const [userList, setUserList] = useState([]);
+const UserTable = ({
+  userList,
+  setUserList,
+  filteredArr,
+  setFilteredArr,
+  searchValues,
+}) => {
+  console.log(userList, "filteredArr");
+  // const [userList, setUserList] = useState([]);
   const [open, setOpen] = useState(false);
   const [rowId, setRowId] = useState("");
 
-  useEffect(() => {
-    const getDatas = async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/`
-      );
-      const user = response?.data;
-      setUserList(user);
-    };
+  // useEffect(() => {
+  //   const getDatas = async () => {
+  //     const response = await axios.get(
+  //       `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/`
+  //     );
+  //     const user = response?.data;
+  //     setUserList(user);
+  //   };
 
-    getDatas();
-  }, []);
+  //   getDatas();
+  // }, []);
   const columns = [
     {
       field: "serialNumber",
@@ -96,20 +103,25 @@ const UserTable = () => {
   };
   return (
     <div>
-      
       <ToastContainer />
 
       <DataGrid
-        rows={userList}
+        rows={userList?.filter(
+          (item) =>
+            item.mobileNo.toString().includes(searchValues.toLowerCase()) ||
+            item.userName.toLowerCase().includes(searchValues.toLowerCase()) || 
+            item.email?.toLowerCase().includes(searchValues.toLowerCase()) ||      
+            item.country?.toLowerCase().includes(searchValues.toLowerCase())  
+            )}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[5, 10]}
         sx={{
           border: 0,
           width: "100%",
-          overflowX: "auto", 
+          overflowX: "auto",
           "& .MuiDataGrid-root": {
-            fontSize: "14px", 
+            fontSize: "14px",
           },
         }}
         getRowId={(row) => row._id}

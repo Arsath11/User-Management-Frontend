@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -25,10 +25,28 @@ import Paper from "@mui/material/Paper";
 import UserTable from "./UserTable";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
+import axios from "axios";
 
 const Home = () => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [searchValues, setSearchValues] = useState("");
+  const [userList, setUserList] = useState([]);
+  const [filteredArr, setFilteredArr] = useState([]);
+
+  useEffect(() => {
+    const getDatas = async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_USER_API_URI}` + `/api/add-user/`
+      );
+      const user = response?.data;
+
+      setUserList(user);
+      // setFilteredArr(user);
+    };
+
+    getDatas();
+  }, [searchValues]);
   const navigate = useNavigate();
   const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
     ({ theme }) => ({
@@ -105,19 +123,50 @@ const Home = () => {
     ],
   }));
 
+  const handleSearchValues = (event) => {
+    let values = event.target.value;
+
+    setSearchValues(values);
+
+    if (!values.trim()) {
+      // If the input is empty, reset to full userList
+      setFilteredArr([...userList]);
+      return;
+    }
+    const filteredValues = userList?.filter(
+      (data) =>
+        data?.userName?.toLowerCase()?.trim() == values?.toLowerCase()?.trim()
+    );
+
+    if (filteredValues) {
+      return setFilteredArr(filteredValues);
+    }
+  };
+
   return (
     <div>
-        <Button
-            onClick={() => navigate("/add-user")}
-            variant="contained"
-            style={{ marginBottom: "20px",marginLeft:"20px" }}
-            className="add_user_form"
-            color="primary"
-          >
-            Add User
-          </Button>
+      <Button
+        onClick={() => navigate("/add-user")}
+        variant="contained"
+        style={{ marginBottom: "20px", marginLeft: "20px" }}
+        className="add_user_form"
+        color="primary"
+      >
+        Add User
+      </Button>
+      <span className="input-container">
+        <input
+          style={{ marginBottom: "20px", marginLeft: "20px" }}
+          type="search"
+          name=""
+          className="input-search"
+          value={searchValues}
+          placeholder="Search..."
+          id=""
+          onChange={handleSearchValues}
+        />
+      </span>
       <Box sx={{ display: "flex" }}>
-        
         <CssBaseline />
         <AppBar position="fixed" open={open}>
           <Toolbar>
@@ -186,10 +235,15 @@ const Home = () => {
         </Drawer>
 
         <Main open={open}>
-        
           <Typography>
             <Paper sx={{ height: 300, width: "100%" }}>
-              <UserTable />
+              <UserTable
+                userList={userList}
+                setUserList={setUserList}
+                filteredArr={filteredArr}
+                setFilteredArr={setFilteredArr}
+                searchValues={searchValues}
+              />
             </Paper>
           </Typography>
         </Main>

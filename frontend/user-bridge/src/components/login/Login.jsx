@@ -7,7 +7,6 @@ import axios from "axios";
 import bcrypt from "bcryptjs";
 import { ToastContainer, toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import SaveIcon from "@mui/icons-material/Save";
 const Login = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
@@ -25,6 +24,7 @@ const Login = () => {
         `${import.meta.env.VITE_USER_API_URI}` + `/api/users/`
       );
       const user = response?.data;
+      console.log(user,"user")
       setUserList(user);
     };
     getDatas();

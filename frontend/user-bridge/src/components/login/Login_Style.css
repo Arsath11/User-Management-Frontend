@@ -79,3 +79,13 @@
   right: 30px;
 }
   }
+
+  .input-search{
+    padding: 8px;
+    outline: none;
+  }
+
+  .input-container{
+    margin-left: 20px;
+    
+  }
